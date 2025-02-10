@@ -11,15 +11,11 @@ main_blueprint = Blueprint('main', __name__)
 
 NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
 
-@main_blueprint.route('/', methods=['GET'])
-# @login_required
-def main_page():
-
+def get_articles():
     articles = []
 
     url = ('https://newsapi.org/v2/everything?'
             'q=DeepSeek&'
-            #    'from=2025-02-07&'
             'sortBy=popularity&'
             'apiKey=' + NEWS_API_KEY
             )
@@ -28,9 +24,16 @@ def main_page():
 
     if response.status_code == 200:
         data = response.json()
-
         articles = data['articles']
 
-    
+    return articles
+
+
+@main_blueprint.route('/', methods=['GET'])
+# @login_required
+def main_page():
+
+    articles = get_articles()
+
     return render_template('dashboard.html', articles=articles)
     
